@@ -1,0 +1,45 @@
+name: Build and push Docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'caddy/**'
+
+env:
+  REGISTRY: ghcr.io
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./caddy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        name: Build and push Docker image
+        with:
+          context: .
+          build-args: "VERSION=${{env.VERSION}}"
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/siroj100/caddy:latest
+            ${{ env.REGISTRY }}/siroj100/caddy:${{ env.VERSION }}
