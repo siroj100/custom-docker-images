@@ -1,0 +1,10 @@
+# first ignore all files
+*
+
+# then add back the ONLY files that we want to commit
+!.gitignore
+!.dockerignore
+!VERSION
+!*/
+!.github/**
+!Dockerfile
