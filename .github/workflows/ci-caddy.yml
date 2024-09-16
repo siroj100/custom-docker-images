@@ -37,8 +37,8 @@ jobs:
       - uses: docker/build-push-action@v6
         name: Build and push Docker image
         with:
-          context: .
-          build-args: "VERSION=${{env.VERSION}}"
+          context: ./caddy
+          build-args: "VERSION=${{ env.VERSION }}"
           push: true
           tags: |
             ${{ env.REGISTRY }}/siroj100/caddy:latest
